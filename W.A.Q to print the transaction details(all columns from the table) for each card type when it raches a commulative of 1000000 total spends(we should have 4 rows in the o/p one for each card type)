@@ -1,0 +1,8 @@
+/* W.A.Q to print the transaction details(all columns from the table) for each card type when it raches
+a commulative of 1000000 total spends(we should have 4 rows in the o/p one for each card type)
+*/
+with cte as(
+select cct.*,sum(amount) over(partition by card_type order by transaction_date,transaction_id) as total_spend
+from credit_card_transcations cct)
+select * from (select cte.*, rank() over(partition by card_type order by total_spend) as rn from cte where 
+cte.total_spend>=1000000) where rn=1;
