@@ -1,0 +1,8 @@
+--W.A.Q to print highest spend month and amount spent in that month for each card type
+with cte as(
+select card_type,extract(year from transaction_date) as year,extract(month from transaction_date) as months, sum(amount) as amount_spent
+from credit_card_transcations group by card_type,extract(year from transaction_date),extract(month from transaction_date) order by months asc
+)
+select * from(
+select cte.*,rank() over(partition by cte.card_type order by cte.amount_spent desc) as rn  from
+cte) where rn=1;
