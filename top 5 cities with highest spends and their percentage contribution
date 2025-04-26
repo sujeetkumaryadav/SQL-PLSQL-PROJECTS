@@ -1,0 +1,10 @@
+/*write a queries to print top 5 cities with highest spends and their percentage contribution of total
+credit card spends */
+
+with cte1 as(
+select city, sum(amount) as total_spends from credit_card_transcations group by city)
+,total_spent as (select sum(cast(amount as number(19,0))) as total_amount from credit_card_transcations)
+select * from( select cte1.*,round(100.0*cte1.total_spends/total_spent.total_amount,2) as percentages_contribution from
+cte1,total_spent order by cte1.total_spends desc ) where rownum<=5;
+
+select * from credit_card_transcations;
