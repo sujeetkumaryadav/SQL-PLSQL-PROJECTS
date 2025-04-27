@@ -1,0 +1,8 @@
+--9- which city took least number of days to reach its 500th transaction after the first transaction in that city
+
+with cte as(
+select a.*, row_number() over(partition by city order by transaction_date,transaction_id) as rn from credit_card_transcations a
+)
+select * from(
+select city,(max(transaction_date)-min(transaction_date)) as datediff from cte where rn=1 or rn=500
+group by city having count(1)=2 order by datediff asc) where rownum<=1;
