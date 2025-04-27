@@ -1,0 +1,9 @@
+--W.A.Q to find city which had lowest percentage spend for gold card_type
+with cte as(
+select city, card_type, sum(amount) as amount_spend,
+sum(case when card_type='Gold' then amount end) as gold_amount
+from credit_card_transcations group by city, card_type
+)
+select * from
+(select city,sum(gold_amount)*1.0/sum(amount_spend) as gold_ratio
+from cte group by city having sum(gold_amount) is not null order by gold_ratio) where rownum=1;
