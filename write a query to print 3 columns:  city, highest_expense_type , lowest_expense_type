@@ -1,0 +1,15 @@
+/*write a query to print 3 columns:  city, highest_expense_type , lowest_expense_type 
+(example format : Delhi , bills, Fuel)
+*/
+
+with cte as(
+select city,exp_type,sum(amount) as expense_amount
+from credit_card_transcations group by city,exp_type
+)
+,cte1 as(select cte.*,
+rank() over(partition by cte.city order by cte.expense_amount desc) as rn_desc,
+rank() over(partition by cte.city order by cte.expense_amount asc) as rn_asc
+from cte)
+select cte1.city, max(case when cte1.rn_desc=1 then cte1.exp_type end) as highest_exp_type
+,min(case when cte1.rn_asc=1 then cte1.exp_type end) as lowest_exp_type
+from cte1 group by cte1.city;
