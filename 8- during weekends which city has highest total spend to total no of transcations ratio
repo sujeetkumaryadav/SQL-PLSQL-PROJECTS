@@ -1,0 +1,8 @@
+--8- during weekends which city has highest total spend to total no of transcations ratio
+
+select * from credit_card_transcations;
+
+select * from (
+select city,sum(amount)*1.0/count(1) as ratio
+from credit_card_transcations where to_char(transaction_date,'D') in(1,7) group by city
+order by ratio desc) where rownum<=1;
